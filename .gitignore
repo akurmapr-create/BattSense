@@ -3,3 +3,7 @@
 # Editor configuration
 .vscode/
 **/.vscode/
+
+# KiCad generated files
+**/.history/
+*.kicad_prl
