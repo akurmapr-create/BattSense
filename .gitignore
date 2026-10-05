@@ -1,1 +1,5 @@
 .DS_Store
+
+# Editor configuration
+.vscode/
+**/.vscode/
