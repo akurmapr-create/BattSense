@@ -330,6 +330,47 @@ This experimentally verified that the revised analog-front-end scaling moved the
 The variation between individual ADC samples will be characterized separately before deciding whether averaging or digital filtering is necessary.
 
 ---
+## ADC Sample Averaging
+
+After resolving the ADC saturation issue, repeated battery-voltage measurements were collected to characterize measurement variation.
+
+With individual calibrated ADC measurements, the observed battery-voltage output ranged approximately from:
+
+\[
+3.808V \text{ to } 3.847V
+\]
+
+giving a peak-to-peak variation of:
+
+\[
+\Delta V_{PP}=39mV
+\]
+
+Because battery terminal voltage changes relatively slowly, multi-sample averaging was evaluated as a method of reducing random ADC variation.
+
+BattSense was configured to average 16 calibrated ADC measurements for each reported voltage measurement.
+
+After implementing 16-sample averaging, the observed battery-voltage range was approximately:
+
+\[
+3.818V \text{ to } 3.836V
+\]
+
+giving:
+
+\[
+\Delta V_{PP}=18mV
+\]
+
+The observed peak-to-peak variation was therefore reduced by approximately:
+
+\[
+\frac{39-18}{39}\times100\approx54\%
+\]
+
+Based on this experimental result, 16-sample averaging was retained in the Rev A BatteryMonitor implementation.
+
+The raw ADC diagnostic remains a single conversion and therefore exhibits greater sample-to-sample variation than the averaged production voltage measurement.
 
 # Firmware Interface
 
@@ -391,6 +432,26 @@ Potential future improvements include:
 Filtering and averaging will only be introduced after measurement data demonstrates a need for them.
 
 ---
+
+# Lessons Learned
+
+The Rev A voltage-measurement subsystem demonstrated the importance of validating analog designs against real hardware rather than relying exclusively on theoretical calculations.
+
+Key findings included:
+
+1. The original approximately 2.0 V ADC target caused the 12-bit ESP32 ADC reading to saturate at 4095 when using 6 dB attenuation.
+
+2. The analog front end was redesigned for approximately 1.6 V maximum ADC input at a 4.2 V battery voltage.
+
+3. The revised 20.7 kΩ / 13.0 kΩ divider eliminated the observed ADC saturation while maintaining approximately 8 kΩ source impedance.
+
+4. Separating raw ADC count, ADC-pin voltage, and reconstructed battery voltage significantly simplified troubleshooting.
+
+5. Measurements were used to justify signal-processing changes rather than adding filtering preemptively.
+
+6. Sixteen-sample averaging reduced observed battery-voltage peak-to-peak variation from approximately 39 mV to 18 mV.
+
+7. The available multimeter was sufficient for functional validation but was not accurate enough to characterize absolute measurement accuracy. Therefore, BattSense Rev A claims functional and repeatable battery telemetry rather than precision voltage measurement.
 
 # References
 

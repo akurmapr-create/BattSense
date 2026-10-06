@@ -27,20 +27,24 @@ constexpr SocPoint SOC_CURVE[] =
 constexpr int SOC_CURVE_SIZE =
     sizeof(SOC_CURVE) / sizeof(SOC_CURVE[0]);
 
-}
+} // namespace
+
 
 float StateOfChargeEstimator::estimate(float batteryVoltage) const
 {
+    // Clamp voltages below the lowest lookup-table point to 0%.
     if (batteryVoltage <= SOC_CURVE[0].voltage)
     {
         return 0.0f;
     }
 
+    // Clamp voltages above the highest lookup-table point to 100%.
     if (batteryVoltage >= SOC_CURVE[SOC_CURVE_SIZE - 1].voltage)
     {
         return 100.0f;
     }
 
+    // Find the two lookup-table points surrounding the measured voltage.
     for (int i = 0; i < SOC_CURVE_SIZE - 1; i++)
     {
         const SocPoint& lower = SOC_CURVE[i];
@@ -49,14 +53,18 @@ float StateOfChargeEstimator::estimate(float batteryVoltage) const
         if (batteryVoltage >= lower.voltage &&
             batteryVoltage <= upper.voltage)
         {
+            // Determine how far the measured voltage lies between
+            // the two surrounding lookup-table voltages.
             const float fraction =
                 (batteryVoltage - lower.voltage) /
                 (upper.voltage - lower.voltage);
 
+            // Linearly interpolate the corresponding state of charge.
             return lower.percent +
                    fraction * (upper.percent - lower.percent);
         }
     }
 
+    // Defensive fallback. Valid voltages should never reach this point.
     return 0.0f;
 }
