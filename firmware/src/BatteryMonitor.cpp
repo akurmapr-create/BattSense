@@ -32,9 +32,17 @@ int BatteryMonitor::readRawADC()
 
 float BatteryMonitor::readADCVoltage()
 {
-    const uint32_t millivolts = analogReadMilliVolts(ADC_PIN);
+    uint32_t totalMillivolts = 0;
 
-    return millivolts / 1000.0f;
+    for (uint8_t i = 0; i < ADC_SAMPLE_COUNT; i++)
+    {
+        totalMillivolts += analogReadMilliVolts(ADC_PIN);
+    }
+
+    const float averageMillivolts =
+        static_cast<float>(totalMillivolts) / ADC_SAMPLE_COUNT;
+
+    return averageMillivolts / 1000.0f;
 }
 
 float BatteryMonitor::adcToBatteryVoltage(float adcVoltage)
