@@ -473,16 +473,22 @@
 		(uuid "c68527f0-7200-4f96-a5b1-c03b1480b873")
 	)
 	(junction
-		(at 63.5 39.37)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "213d3326-81c8-4327-bd02-d6088f3b7b80")
-	)
-	(junction
 		(at 63.5 67.31)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "bb082101-0bb6-42f2-a809-dc55e41a9316")
+	)
+	(junction
+		(at 63.5 77.47)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "bc9cad23-a89e-40ae-adc2-5c982f35b541")
+	)
+	(junction
+		(at 63.5 69.85)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "fe91ed8c-78fe-47f4-ab73-9799de7dcaff")
 	)
 	(wire
 		(pts
@@ -496,33 +502,23 @@
 	)
 	(wire
 		(pts
-			(xy 63.5 39.37) (xy 63.5 43.18)
+			(xy 63.5 69.85) (xy 63.5 71.12)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "26f45aa2-adce-44e4-a727-90c92766d3fc")
+		(uuid "2ce8fafd-b187-48c9-8b84-0ddc40a51a8b")
 	)
 	(wire
 		(pts
-			(xy 63.5 38.1) (xy 63.5 39.37)
+			(xy 63.5 54.61) (xy 63.5 59.69)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "3134b238-44e2-4a40-9931-9d58c4db1fbb")
-	)
-	(wire
-		(pts
-			(xy 63.5 50.8) (xy 63.5 59.69)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5a5c5315-6e94-4925-8bf2-9b3557f0406a")
+		(uuid "3cbfedf0-40c3-4949-ae0a-3bb75c1ba57e")
 	)
 	(wire
 		(pts
@@ -546,7 +542,7 @@
 	)
 	(wire
 		(pts
-			(xy 63.5 67.31) (xy 63.5 71.12)
+			(xy 63.5 67.31) (xy 63.5 69.85)
 		)
 		(stroke
 			(width 0)
@@ -595,7 +591,7 @@
 		(uuid "51aecfe2-a469-4181-8e71-81ab7298616c")
 	)
 	(label "ADC_SENSE"
-		(at 63.5 55.88 0)
+		(at 63.5 57.15 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -613,6 +609,88 @@
 			(justify left bottom)
 		)
 		(uuid "caa35133-59ae-4cd0-9b6e-11d555e6bfe8")
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 63.5 50.8 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "05d10901-6e05-4f29-8d86-0a2a0ff32d46")
+		(property "Reference" "R3"
+			(at 66.04 49.5299 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "3.3k"
+			(at 66.04 52.0699 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Package_DIP:DIP-8_W7.62mm"
+			(at 61.722 50.8 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 63.5 50.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 63.5 50.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "6f5e3668-96af-4448-8b80-2cfea7fab0d0")
+		)
+		(pin "2"
+			(uuid "0072de25-7c2b-43b6-8ec4-9b5b25a191a5")
+		)
+		(instances
+			(project "BattSense_AFE"
+				(path "/332ccf2f-4d68-4237-9984-f4702488be93"
+					(reference "R3")
+					(unit 1)
+				)
+			)
+		)
 	)
 	(symbol
 		(lib_id "Device:R")
@@ -778,89 +856,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 63.5 74.93 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "5c901206-4f4f-4359-b3d1-cd77575c5faf")
-		(property "Reference" "R4"
-			(at 66.04 73.6599 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "5.1k"
-			(at 66.04 76.1999 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 61.722 74.93 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 63.5 74.93 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 63.5 74.93 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "cb91c3dd-603a-4b99-803f-8141ca1061e6")
-		)
-		(pin "2"
-			(uuid "1e0e2d3b-740d-446c-83e9-f8ceaf24d63d")
-		)
-		(instances
-			(project "BattSense_AFE"
-				(path "/332ccf2f-4d68-4237-9984-f4702488be93"
-					(reference "R4")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 63.5 46.99 0)
+		(at 63.5 43.18 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -871,7 +867,7 @@
 		(fields_autoplaced yes)
 		(uuid "6d188379-fae9-4e96-810a-e019d87416dc")
 		(property "Reference" "R2"
-			(at 66.04 45.7199 0)
+			(at 66.04 41.9099 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -882,7 +878,7 @@
 			)
 		)
 		(property "Value" "6.8k"
-			(at 66.04 48.2599 0)
+			(at 66.04 44.4499 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -893,7 +889,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 61.722 46.99 90)
+			(at 61.722 43.18 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -904,7 +900,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 63.5 46.99 0)
+			(at 63.5 43.18 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -915,7 +911,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 63.5 46.99 0)
+			(at 63.5 43.18 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -1175,6 +1171,88 @@
 			(project "BattSense_AFE"
 				(path "/332ccf2f-4d68-4237-9984-f4702488be93"
 					(reference "#PWR02")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 63.5 73.66 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "a89942fe-2fe0-4372-8811-2300f4c148d6")
+		(property "Reference" "R5"
+			(at 66.04 72.3899 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "3.3k"
+			(at 66.04 74.9299 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 61.722 73.66 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 63.5 73.66 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 63.5 73.66 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "c5072274-b2ee-4963-b001-a3f9e776e738")
+		)
+		(pin "2"
+			(uuid "e3e4a071-ddc7-41d8-9922-2a7e098cd2e3")
+		)
+		(instances
+			(project "BattSense_AFE"
+				(path "/332ccf2f-4d68-4237-9984-f4702488be93"
+					(reference "R5")
 					(unit 1)
 				)
 			)

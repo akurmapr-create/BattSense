@@ -7,3 +7,8 @@
 # KiCad generated files
 **/.history/
 *.kicad_prl
+
+# KiCad temporary and backup files
+**/.history/
+**/~*.kicad_*
+*.kicad_prl
