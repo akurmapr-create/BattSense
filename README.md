@@ -2,7 +2,7 @@
 
 **ESP32-based Li-ion battery monitor with voltage-based state-of-charge estimation, a custom KiCad PCB, OLED interface, and unit-tested firmware.**
 
-![BattSense Prototype](images/battsense_prototype.jpg)
+![BattSense working prototype](images/battsense_prototype.jpeg)
 
 BattSense is an embedded battery-monitoring system for a single-cell Li-ion battery. It measures battery voltage through a custom analog front end, estimates battery state of charge (SoC), and displays the result locally on an OLED.
 
