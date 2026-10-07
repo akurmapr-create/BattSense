@@ -24,7 +24,8 @@ Adafruit_SSD1306 display(
     OLED_RESET
 );
 
-}
+} // namespace
+
 
 bool DisplayManager::begin()
 {
@@ -42,29 +43,128 @@ bool DisplayManager::begin()
     return true;
 }
 
+
 void DisplayManager::showBattery(
     float batteryVoltage,
     float stateOfCharge
 )
 {
+    // Clamp SoC to the valid display range.
+    if (stateOfCharge < 0.0f)
+    {
+        stateOfCharge = 0.0f;
+    }
+    else if (stateOfCharge > 100.0f)
+    {
+        stateOfCharge = 100.0f;
+    }
+
+    const int newPercent =
+        static_cast<int>(stateOfCharge + 0.5f);
+
+    // Initialize the displayed percentage immediately.
+    if (displayedPercent < 0)
+    {
+        displayedPercent = newPercent;
+    }
+    // Only update the displayed percentage if the new value
+    // differs by at least the hysteresis threshold.
+    else if (abs(newPercent - displayedPercent) >= SOC_HYSTERESIS)
+    {
+        displayedPercent = newPercent;
+    }
+
     display.clearDisplay();
 
+    // ------------------------------------------------
     // Header
+    // Top portion of this OLED is physically yellow.
+    // ------------------------------------------------
+
     display.setTextSize(1);
-    display.setCursor(38, 2);
+    display.setTextColor(SSD1306_WHITE);
+    display.setCursor(37, 2);
     display.print("BattSense");
 
-    // State of charge
-    display.setTextSize(3);
-    display.setCursor(34, 18);
-    display.print(static_cast<int>(stateOfCharge + 0.5f));
+    display.drawLine(
+        0,
+        14,
+        SCREEN_WIDTH - 1,
+        14,
+        SSD1306_WHITE
+    );
+
+    // ------------------------------------------------
+    // State-of-charge percentage
+    // ------------------------------------------------
+
+    display.setTextSize(2);
+
+    // Adjust horizontal position depending on number
+    // of digits so the percentage remains centered.
+    if (displayedPercent == 100)
+    {
+        display.setCursor(43, 19);
+    }
+    else if (displayedPercent >= 10)
+    {
+        display.setCursor(49, 19);
+    }
+    else
+    {
+        display.setCursor(55, 19);
+    }
+
+    display.print(displayedPercent);
     display.print("%");
 
+    // ------------------------------------------------
+    // Battery level bar
+    // ------------------------------------------------
+
+    constexpr int BAR_X = 14;
+    constexpr int BAR_Y = 39;
+    constexpr int BAR_WIDTH = 100;
+    constexpr int BAR_HEIGHT = 10;
+
+    display.drawRect(
+        BAR_X,
+        BAR_Y,
+        BAR_WIDTH,
+        BAR_HEIGHT,
+        SSD1306_WHITE
+    );
+
+    const int innerWidth = BAR_WIDTH - 4;
+
+    // The bar represents the underlying SoC estimate,
+    // not the hysteresis-controlled displayed percentage.
+    const int fillWidth =
+        static_cast<int>(
+            (stateOfCharge / 100.0f) * innerWidth
+        );
+
+    if (fillWidth > 0)
+    {
+        display.fillRect(
+            BAR_X + 2,
+            BAR_Y + 2,
+            fillWidth,
+            BAR_HEIGHT - 4,
+            SSD1306_WHITE
+        );
+    }
+
+    // ------------------------------------------------
     // Battery voltage
+    // ------------------------------------------------
+
     display.setTextSize(1);
-    display.setCursor(45, 51);
+    display.setCursor(47, 54);
+
     display.print(batteryVoltage, 2);
     display.print(" V");
 
+    // Send completed frame to OLED.
     display.display();
 }

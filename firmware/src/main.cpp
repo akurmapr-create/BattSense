@@ -29,23 +29,34 @@ void setup()
 
 void loop()
 {
-    const float batteryVoltage = battery.getVoltage();
+    const BatteryDiagnostics diagnostics = battery.getDiagnostics();
 
     const float stateOfCharge =
-        socEstimator.estimate(batteryVoltage);
+        socEstimator.estimate(diagnostics.batteryVoltage);
 
     display.showBattery(
-        batteryVoltage,
+        diagnostics.batteryVoltage,
         stateOfCharge
     );
 
-    Serial.print("Battery Voltage: ");
-    Serial.print(batteryVoltage, 3);
+    Serial.println("----- Battery Diagnostics -----");
+
+    Serial.print("Raw ADC:          ");
+    Serial.println(diagnostics.rawAdcCount);
+
+    Serial.print("ADC Voltage:      ");
+    Serial.print(diagnostics.adcVoltage, 3);
     Serial.println(" V");
 
-    Serial.print("Estimated SoC: ");
+    Serial.print("Battery Voltage:  ");
+    Serial.print(diagnostics.batteryVoltage, 3);
+    Serial.println(" V");
+
+    Serial.print("Estimated SoC:    ");
     Serial.print(stateOfCharge, 1);
     Serial.println(" %");
+
+    Serial.println("-------------------------------");
 
     delay(1000);
 }
