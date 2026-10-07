@@ -1,19 +1,30 @@
 #include <Arduino.h>
+
 #include "BatteryMonitor.h"
 #include "StateOfChargeEstimator.h"
+#include "DisplayManager.h"
 
 BatteryMonitor battery;
 StateOfChargeEstimator socEstimator;
+DisplayManager display;
 
 void setup()
 {
     Serial.begin(115200);
+
     battery.begin();
 
-    Serial.println();
-    Serial.println("================================");
-    Serial.println("       BattSense Rev A");
-    Serial.println("================================");
+    if (!display.begin())
+    {
+        Serial.println("OLED initialization failed.");
+
+        while (true)
+        {
+            delay(1000);
+        }
+    }
+
+    Serial.println("BattSense initialized.");
 }
 
 void loop()
@@ -23,7 +34,11 @@ void loop()
     const float stateOfCharge =
         socEstimator.estimate(diagnostics.batteryVoltage);
 
-    Serial.println();
+    display.showBattery(
+        diagnostics.batteryVoltage,
+        stateOfCharge
+    );
+
     Serial.println("----- Battery Diagnostics -----");
 
     Serial.print("Raw ADC:          ");

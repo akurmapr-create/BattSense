@@ -1,32 +1,28 @@
 # BattSense
 
-**ESP32-based Li-ion battery monitor with voltage-based state-of-charge estimation, a custom KiCad PCB, OLED interface, and unit-tested firmware.**
+**ESP32 Li-ion battery monitor with voltage-based state-of-charge estimation, a custom KiCad PCB, OLED interface, and unit-tested firmware.**
 
 ![BattSense working prototype](images/battsense_prototype.jpeg)
 
-BattSense is an embedded battery-monitoring system for a single-cell Li-ion battery. It measures battery voltage through a custom analog front end, estimates battery state of charge (SoC), and displays the result locally on an OLED.
+BattSense is an embedded battery-monitoring system for a single-cell Li-ion battery. It measures battery voltage through a resistive analog front end, estimates battery state of charge (SoC), and displays the result locally on an OLED.
 
 The project was developed from circuit design and breadboard validation through modular firmware, automated testing, PCB design, and enclosure development.
-
----
 
 ## Features
 
 - Single-cell Li-ion battery voltage measurement
 - ESP32 ADC acquisition on GPIO34
 - Custom resistive analog front end
-- 16-sample ADC averaging
+- ADC sample averaging
 - Voltage-based state-of-charge estimation
 - OCV-SoC lookup table with piecewise-linear interpolation
 - 128×64 I2C OLED interface
-- Modular C++ firmware architecture
+- Modular C++ firmware
 - Native unit testing with PlatformIO and Unity
 - GitHub Actions continuous integration
 - Custom 2-layer KiCad PCB
 - Removable ESP32 DevKit architecture
 - Through-hole design for hand assembly
-
----
 
 ## System Architecture
 
@@ -59,22 +55,20 @@ The project was developed from circuit design and breadboard validation through 
 
 The firmware separates measurement, battery modeling, and presentation into independent modules.
 
----
-
 ## Hardware
 
 ### Analog Front End
 
 The ESP32 measures the battery through a passive resistive divider.
 
-The current Rev A divider uses:
+Rev A uses:
 
 ```text
 R_UPPER = 20.1 kΩ
 R_LOWER = 13.3 kΩ
 ```
 
-At the maximum expected Li-ion voltage of 4.2 V:
+At a maximum single-cell Li-ion voltage of 4.2 V:
 
 \[
 V_{ADC}
@@ -88,7 +82,7 @@ V_{ADC}
 1.67V
 \]
 
-The divider presents approximately:
+The divider presents a Thevenin resistance of approximately:
 
 \[
 R_{TH}
@@ -102,9 +96,9 @@ to the ESP32 ADC.
 
 ### Schematic
 
-![BattSense Schematic](images/battsense_schematic.png)
+![BattSense schematic](images/battsense_schematic.png)
 
-The complete KiCad design includes:
+The KiCad design includes:
 
 - Battery input
 - Voltage-divider analog front end
@@ -112,15 +106,19 @@ The complete KiCad design includes:
 - OLED I2C interface
 - Power and ground connections
 
-Detailed analog-front-end calculations are available in [`docs/analog_front_end.md`](docs/analog_front_end.md).
+Additional analog-front-end documentation is available in [`docs/analog_front_end.md`](docs/analog_front_end.md).
 
----
-
-## PCB
+## PCB Design
 
 BattSense Rev A includes a custom **60 mm × 50 mm, 2-layer carrier PCB** designed in KiCad.
 
-![BattSense PCB](images/battsense_pcb_3d.png)
+### PCB Layout
+
+![BattSense PCB layout](images/battsense_pcb.png)
+
+### 3D Render
+
+![BattSense PCB 3D render](images/battsense_pcb_3d.png)
 
 The PCB includes:
 
@@ -130,22 +128,20 @@ The PCB includes:
 - Battery interface
 - B.Cu ground plane
 - Three M3 enclosure mounting holes
-- Left-facing ESP32 USB access
+- ESP32 orientation for left-side USB access
 
-The completed layout passes KiCad DRC with:
+The completed layout passes KiCad design-rule checking with:
 
 ```text
 Unrouted connections: 0
 DRC violations:       0
 ```
 
-Gerber and drill files are included in the hardware directory.
-
----
+Gerber and drill files have also been generated for Rev A fabrication.
 
 ## Firmware Architecture
 
-The firmware is divided into independent modules:
+The firmware is separated into dedicated modules:
 
 ```text
 BatteryMonitor
@@ -162,34 +158,32 @@ DisplayManager
 OLED
 ```
 
-### `BatteryMonitor`
+### BatteryMonitor
 
 Responsible for:
 
 - ESP32 ADC configuration
 - ADC acquisition
-- 16-sample averaging
+- Sample averaging
 - ADC-voltage conversion
 - Voltage-divider compensation
 - Battery-voltage reporting
 
-### `StateOfChargeEstimator`
+### StateOfChargeEstimator
 
-Responsible for converting measured battery voltage into an estimated state of charge.
+Converts measured battery voltage into an estimated state of charge.
 
-### `DisplayManager`
+### DisplayManager
 
-Responsible for presenting battery voltage and estimated SoC on the SSD1306-compatible OLED.
-
----
+Presents battery voltage and estimated SoC on the OLED.
 
 ## State-of-Charge Estimation
 
-BattSense Rev A uses a **voltage-based SoC estimator**.
+BattSense Rev A uses a **voltage-based state-of-charge estimator**.
 
-A generic Li-ion open-circuit-voltage versus state-of-charge lookup table is stored in firmware. When the measured voltage falls between two table entries, BattSense performs piecewise-linear interpolation.
+A Li-ion open-circuit-voltage versus state-of-charge lookup table is stored in firmware. When the measured voltage falls between two table entries, BattSense performs piecewise-linear interpolation.
 
-For neighboring points:
+For neighboring lookup points:
 
 \[
 (V_1,SOC_1)
@@ -209,7 +203,7 @@ t =
 {V_2-V_1}
 \]
 
-and:
+and the estimated state of charge is:
 
 \[
 SOC =
@@ -217,19 +211,17 @@ SOC_1 +
 t(SOC_2-SOC_1)
 \]
 
-Values outside the table are clamped to 0% or 100%.
+Values outside the lookup-table range are clamped to 0% or 100%.
 
-The estimator is intentionally implemented independently of the ADC hardware, allowing it to be unit tested natively.
+The estimator is independent of ESP32 hardware, allowing it to be tested natively on a development machine.
 
-> **Note:** Voltage-based SoC is an estimate, not precision fuel gauging. Terminal voltage is affected by cell chemistry, temperature, aging, load current, and relaxation state.
+> **Note:** Voltage-based SoC is an estimate rather than precision fuel gauging. Terminal voltage is affected by cell chemistry, temperature, aging, load current, and relaxation state.
 
-See [`docs/state_of_charge.md`](docs/state_of_charge.md) for the model, assumptions, limitations, and references.
-
----
+See [`docs/state_of_charge.md`](docs/state_of_charge.md) for additional information about the model and its limitations.
 
 ## Testing
 
-The SoC estimator is tested using the Unity test framework through PlatformIO's native environment.
+The SoC estimator is tested using Unity through PlatformIO's native environment.
 
 Current tests cover:
 
@@ -253,8 +245,6 @@ Run the tests locally with:
 cd firmware
 pio test -e native
 ```
-
----
 
 ## Building the Firmware
 
@@ -285,36 +275,15 @@ Open the serial monitor:
 pio device monitor
 ```
 
----
-
 ## Continuous Integration
 
-BattSense uses GitHub Actions to automatically:
-
-1. Build the ESP32 firmware
-2. Run the native SoC unit tests
-
-on pushes and pull requests to `main`.
+BattSense uses GitHub Actions to automatically build and test the firmware on pushes and pull requests.
 
 [![Firmware CI](https://github.com/akurmapr-create/BattSense/actions/workflows/firmware.yml/badge.svg)](https://github.com/akurmapr-create/BattSense/actions/workflows/firmware.yml)
 
----
+## Development Process
 
-## Prototype Development
-
-BattSense was developed iteratively rather than only simulated.
-
-During hardware validation, the original analog front end caused the ESP32 ADC to saturate at its maximum raw value:
-
-```text
-4095
-```
-
-The divider was redesigned and experimentally validated, moving the ADC measurement back into a usable range.
-
-ADC sample averaging was subsequently evaluated using measured data and retained after reducing observed battery-voltage peak-to-peak variation.
-
-This process followed:
+BattSense has been developed iteratively using physical hardware rather than only simulation.
 
 ```text
 Requirements
@@ -338,7 +307,7 @@ Design Revision
 Validation
 ```
 
----
+The analog front end, ADC acquisition, state-of-charge estimation, OLED interface, and PCB were developed and validated incrementally.
 
 ## Repository Structure
 
@@ -365,11 +334,13 @@ BattSense/
 │       └── BattSense_AFE/
 |
 ├── images/
+│   ├── battsense_prototype.jpeg
+│   ├── battsense_schematic.png
+│   ├── battsense_pcb.png
+│   └── battsense_pcb_3d.png
 |
 └── README.md
 ```
-
----
 
 ## Rev A Status
 
@@ -388,8 +359,6 @@ BattSense/
 - [ ] Permanent perfboard assembly
 - [ ] SolidWorks enclosure
 - [ ] Final voltage validation with reference multimeter
-
----
 
 ## Roadmap
 
@@ -414,21 +383,13 @@ Potential improvements include:
 - Dedicated fuel-gauge evaluation
 - Custom integrated ESP32 PCB
 
----
-
 ## Tools
 
-- **ESP32**
-- **C++ / Arduino**
-- **PlatformIO**
-- **Unity**
-- **GitHub Actions**
-- **KiCad**
-- **SolidWorks**
-- **Git / GitHub**
-
----
-
-## License
-
-See [`LICENSE`](LICENSE).
+- ESP32
+- C++ / Arduino
+- PlatformIO
+- Unity
+- GitHub Actions
+- KiCad
+- SolidWorks
+- Git / GitHub
